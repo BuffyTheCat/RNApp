@@ -9,7 +9,7 @@ const SearchBar = ({ onSubmit }) => {
     return (
         <View style={styles.container}>
             <TextInput style={styles.input} />
-            <Button onPress={onSubmit} title="Add" />
+            <Button onPress={onSubmit('66')} title="Add" />
         </View>
     )
 }
@@ -31,8 +31,10 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onSubmit: () => dispatch(addTodo('123'))
+        onSubmit: (text) => {
+            dispatch(addTodo(text))
+        }
     }
 }
 
-export default connect(mapDispatchToProps)(SearchBar);
+export default connect(null, mapDispatchToProps)(SearchBar);

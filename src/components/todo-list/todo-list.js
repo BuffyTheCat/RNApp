@@ -7,9 +7,9 @@ const TodoList = ({ todos }) => {
     return (
         <View style={styles.container}>
             {
-                todos.map((item) => {
+                todos.map((item, id) => {                                        
                     return (
-                    <Text>{item.text}</Text>
+                        <Text key={id}>{item.text}</Text>
                     )
                 })
             }
@@ -28,4 +28,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(mapStateToProps)(TodoList);
+export default connect(mapStateToProps, null)(TodoList);
