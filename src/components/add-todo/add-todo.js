@@ -5,11 +5,11 @@ import { addTodo } from '../../actions'
 
 
 
-const SearchBar = ({ onSubmit }) => {
+const AddTodo = ({ onSubmit }) => {
     return (
         <View style={styles.container}>
-            <TextInput style={styles.input} />
-            <Button onPress={onSubmit('66')} title="Add" />
+            <TextInput style={styles.input} placeholder='Write Some Text' onChangeText={(text) => this.userName = text} />
+            <Button onPress={() => onSubmit(this.userName)} title="Add" />
         </View>
     )
 }
@@ -17,6 +17,7 @@ const SearchBar = ({ onSubmit }) => {
 const styles = StyleSheet.create({
     container: {
         height: 40,
+        marginBottom: 30,
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
@@ -31,10 +32,8 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onSubmit: (text) => {
-            dispatch(addTodo(text))
-        }
+        onSubmit: (text) => dispatch(addTodo(text))
     }
 }
 
-export default connect(null, mapDispatchToProps)(SearchBar);
+export default connect(null, mapDispatchToProps)(AddTodo);

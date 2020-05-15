@@ -1,21 +1,12 @@
-const initionaState = {
-    todos: [
-        {
-            text: 'asd',
-            finished: false,
-            id: 0
-        },
-        {
-            text: 'asdasd',
-            finished: false,
-            id: 1
-        }
-    ],
+const initionState = {
+    todos: [],
     loading: true,
     error: null,
 };
 
-const reducer = (state = initionaState, action) => {
+const reducer = (state = initionState, action) => {
+    console.log('im here');
+    
     console.log(action.type);
     
     switch (action.type) {
@@ -43,6 +34,28 @@ const reducer = (state = initionaState, action) => {
                     ...state.todos.slice(0, itemId),
                     ...state.todos.slice(itemId + 1)
                 ]
+            }
+
+        case 'TODO_REQUESTED':
+            return {
+                ...state,
+                loading: true
+            }
+
+        case 'TODO_LOADED':
+            return {
+                ...state,
+                loading: false,
+                todos: [
+                    ...action.payload
+                ]
+            }
+
+        case 'FETCH_FAILURE':
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
             }
 
         default:
