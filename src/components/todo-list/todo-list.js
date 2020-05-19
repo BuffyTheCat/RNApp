@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, Button } from 'react-native';
 import { connect } from 'react-redux';
 import { fetchTodos } from '../../actions'
 import { withService } from '../hoc';
-
-
-
+import { todosFinished, removeTodo } from '../../actions'
 
 class TodoList extends Component {
     componentDidMount() {
@@ -13,7 +11,7 @@ class TodoList extends Component {
     }
 
     render() {
-        const { todos, loading } = this.props;
+        const { todos, loading, onFinished, onRemove, navigation } = this.props;
 
         if (loading) {
             return (
@@ -22,17 +20,25 @@ class TodoList extends Component {
         }
 
         return (
-            <View style={styles.container}>
-                {
-                    todos.map((item, id) => {                                        
-                        return (
-                            <View style={styles.todo} key={id}>
-                                <Text style={styles.todoText}>{item.text}</Text>
-                            </View>
-                        )
-                    })
-                }
-            </View>
+            <FlatList
+                data={todos}
+                renderItem={({ item }) => (
+                    <TouchableOpacity style={item.finished ? styles.todoFinished : styles.todo}
+                                      activeOpacity={0.2}
+                                      onPress={() => navigation.navigate('Details',{
+                                        item: item
+                                      })}
+                                      onLongPress={() => onRemove(item.id)}>
+                        <Text style={item.finished ? styles.todoTextFinished : styles.todoText}>{item.text}{item.id}</Text>
+                        <Button
+                            title="finished"
+                            color={item.finished ? "#ffffff" : "#000000"}
+                            onPress={() => onFinished(item.id)}
+                        />
+                    </TouchableOpacity>
+                )}
+                keyExtractor={item => `item-id-${item.id}`}
+            />
         )
     }
 }
@@ -46,7 +52,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, { storeService }) => {
     return {
-        fetchTodos: fetchTodos(storeService, dispatch)
+        fetchTodos: fetchTodos(storeService, dispatch),
+        onFinished: (id) => dispatch(todosFinished(id)),
+        onRemove: (id) => dispatch(removeTodo(id))
     }
 }
 
@@ -54,14 +62,32 @@ const styles = StyleSheet.create({
     container: {
     },
     todo: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         paddingVertical: 5,
         paddingHorizontal: 20,
         borderWidth: 1,
         borderColor: '#6b6b6b',
         borderRadius: 5,
-        marginBottom: 15
+        marginBottom: 15,
+        backgroundColor: 'yellow'
+    },
+    todoFinished: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingVertical: 5,
+        paddingHorizontal: 20,
+        borderWidth: 1,
+        borderColor: '#6b6b6b',
+        borderRadius: 5,
+        marginBottom: 15,
+        backgroundColor: 'green'
     },
     todoText: {
+        fontSize: 24
+    },
+    todoTextFinished: {
+        textDecorationLine: 'line-through',
         fontSize: 24
     }
 })

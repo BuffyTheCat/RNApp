@@ -25,15 +25,35 @@ const reducer = (state = initionState, action) => {
                     newTodo
                 ]
             }
-        case 'REMOVE_TODOS':
-            const itemId = action.payload;
-            const itemIndex = state.todos.findIndex(({itemId}) => id === itemId);
+
+        case 'TODO_FINISHED':
+            const todo = action.payload;
+            const todoIndex = state.todos.findIndex(({id}) => id === todo);
+            
+            const fidishedTodo = {
+                ...state.todos[todoIndex],
+                finished: !state.todos[todoIndex].finished
+            }
+
             return {
                 ...state,
                 todos: [
-                    ...state.todos.slice(0, itemId),
-                    ...state.todos.slice(itemId + 1)
+                    ...state.todos.slice(0, todoIndex),
+                    fidishedTodo,
+                    ...state.todos.slice(todoIndex + 1)
                 ]
+            }
+
+        case 'REMOVE_TODOS':
+            const itemId = action.payload;
+            const itemIndex = state.todos.findIndex(({id}) => id === itemId);
+            const newArray = [
+                ...state.todos.slice(0, itemIndex),
+                ...state.todos.slice(itemIndex + 1)
+            ].map((item, index) => ({ ...item, id: index }));
+            return {
+                ...state,
+                todos: newArray
             }
 
         case 'TODO_REQUESTED':

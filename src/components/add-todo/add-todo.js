@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, TextInput, Button, Text } from 'react-native';
 import { connect } from 'react-redux';
-import { addTodo } from '../../actions'
+import { addTodo } from '../../actions';
 
 
 

@@ -5,6 +5,13 @@ const addTodo = (text) => {
     }
 }
 
+const removeTodo = (id) => {    
+    return {
+        type: 'REMOVE_TODOS',
+        payload: id
+    }
+}
+
 const todoRequested = () => {
     return {
         type: 'TODO_REQUESTED'
@@ -25,6 +32,14 @@ const todosError = (error) => {
     }
 }
 
+
+const todosFinished = (id) => {
+    return {
+        type: 'TODO_FINISHED',
+        payload: id
+    }
+}
+
 const fetchTodos = (storeService, dispatch) => () => {
     dispatch(todoRequested());
     storeService.getTodos()
@@ -34,5 +49,7 @@ const fetchTodos = (storeService, dispatch) => () => {
 
 export {
     addTodo,
+    removeTodo,
+    todosFinished,
     fetchTodos
 }
