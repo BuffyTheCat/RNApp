@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, Button } from 'react-native';
+import { Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, Button, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { fetchTodos } from '../../actions'
 import { withService } from '../hoc';
-import { todosFinished, removeTodo } from '../../actions'
+import { todosFinished, removeTodo } from '../../actions';
+import { THEME } from '../../theme';
 
 class TodoList extends Component {
     componentDidMount() {
@@ -22,14 +23,15 @@ class TodoList extends Component {
         return (
             <FlatList
                 data={todos}
+                style={styles.list}
                 renderItem={({ item }) => (
                     <TouchableOpacity style={item.finished ? styles.todoFinished : styles.todo}
-                                      activeOpacity={0.2}
+                                      activeOpacity={0.1}
                                       onPress={() => navigation.navigate('Details',{
                                         item: item
                                       })}
-                                      onLongPress={() => onRemove(item.id)}>
-                        <Text style={item.finished ? styles.todoTextFinished : styles.todoText}>{item.text}{item.id}</Text>
+                                      onLongPress={() => onRemove(item)}>
+                        <Text style={item.finished ? styles.todoTextFinished : styles.todoText}>{item.text}</Text>
                         <Button
                             title="finished"
                             color={item.finished ? "#ffffff" : "#000000"}
@@ -54,37 +56,61 @@ const mapDispatchToProps = (dispatch, { storeService }) => {
     return {
         fetchTodos: fetchTodos(storeService, dispatch),
         onFinished: (id) => dispatch(todosFinished(id)),
-        onRemove: (id) => dispatch(removeTodo(id))
+        onRemove: (item) => {
+            Alert.alert(
+                "Are you sure?",
+                `You want to remove "${item.text}" todo`,
+                [
+                    {
+                        text: "Cancel",
+                        style: "cancel"
+                    },
+                    { text: "Yes", onPress: () => dispatch(removeTodo(item.id))}
+                ],
+                { cancelable: false }
+            );
+        }
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
+    list: {
+        overflow: 'visible',
     },
     todo: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingVertical: 5,
+        alignItems: 'baseline',
+        paddingTop: 10,
+        paddingBottom: 6,
         paddingHorizontal: 20,
-        borderWidth: 1,
-        borderColor: '#6b6b6b',
         borderRadius: 5,
         marginBottom: 15,
-        backgroundColor: 'yellow'
+        backgroundColor: THEME.YELLOW_COLOR,
+        shadowColor: THEME.BROWN_COLOR,
+        shadowRadius: 10,
+        shadowOpacity: 0.3,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 8,
     },
     todoFinished: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingVertical: 5,
+        alignItems: 'baseline',
+        paddingTop: 10,
+        paddingBottom: 6,
         paddingHorizontal: 20,
-        borderWidth: 1,
-        borderColor: '#6b6b6b',
         borderRadius: 5,
         marginBottom: 15,
-        backgroundColor: 'green'
+        backgroundColor: THEME.GREEN_COLOR,
+        shadowColor: THEME.BROWN_COLOR,
+        shadowRadius: 10,
+        shadowOpacity: 0.3,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 8,
     },
     todoText: {
-        fontSize: 24
+        fontSize: 24,
     },
     todoTextFinished: {
         textDecorationLine: 'line-through',

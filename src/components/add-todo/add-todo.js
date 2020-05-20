@@ -22,8 +22,9 @@ class AddTodo extends Component {
                 <TextInput ref={this.inputRef} style={styles.input} placeholder='Write Some Text' onChangeText={(text) => this.setState({inputText: text})} />
                 <Button disabled={this.state.inputText === ''} 
                         onPress={() => {
-                            onSubmit(this.state.inputText);
+                            onSubmit(this.state.inputText);                            
                             this.inputRef.current.clear();
+                            this.setState({inputText: ''});
                         }} 
                         title="Add" />
             </View>
