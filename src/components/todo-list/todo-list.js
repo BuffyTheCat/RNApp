@@ -30,7 +30,20 @@ class TodoList extends Component {
                                       onPress={() => navigation.navigate('Details',{
                                         item: item
                                       })}
-                                      onLongPress={() => onRemove(item)}>
+                                      onLongPress={() => {
+                                        Alert.alert(
+                                            "Are you sure?",
+                                            `You want to remove "${item.text}" todo`,
+                                            [
+                                                {
+                                                    text: "Cancel",
+                                                    style: "cancel"
+                                                },
+                                                { text: "Yes", onPress: () => onRemove(item)}
+                                            ],
+                                            { cancelable: false }
+                                        );
+                                      }}>
                         <Text style={item.finished ? styles.todoTextFinished : styles.todoText}>{item.text}</Text>
                         <Button
                             title="finished"
@@ -56,20 +69,7 @@ const mapDispatchToProps = (dispatch, { storeService }) => {
     return {
         fetchTodos: fetchTodos(storeService, dispatch),
         onFinished: (id) => dispatch(todosFinished(id)),
-        onRemove: (item) => {
-            Alert.alert(
-                "Are you sure?",
-                `You want to remove "${item.text}" todo`,
-                [
-                    {
-                        text: "Cancel",
-                        style: "cancel"
-                    },
-                    { text: "Yes", onPress: () => dispatch(removeTodo(item.id))}
-                ],
-                { cancelable: false }
-            );
-        }
+        onRemove: (item) => dispatch(removeTodo(item.id))
     }
 }
 

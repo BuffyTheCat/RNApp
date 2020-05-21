@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, View, Modal, TextInput, Button } from 'react-native';
+import { Text, StyleSheet, View, Modal, TextInput, Button, Alert, ActivityIndicator } from 'react-native';
 import Container from '../../components/container'
 import { THEME } from '../../theme';
+import { connect } from 'react-redux';
+import { changeTodo, removeTodo } from '../../actions';
 
 class DetailScreen extends Component {
     constructor(props) {
@@ -14,33 +16,62 @@ class DetailScreen extends Component {
     }
 
     render() {
-        const { route, navigation } = this.props;
+        const { route, navigation, stateTodos, onChangeTodo, onRemove } = this.props;
         const { item } = route.params;
+
+        const currentItemIndex = stateTodos.findIndex(({id}) => id === item.id);
+        const currentItem = stateTodos[currentItemIndex]
         
+        if (currentItem) {
+            return (
+                <Container style={styles.wrapper}>
+                    <View style={styles.cardHead}>
+                        <Text style={styles.text}>{currentItem.text ? currentItem.text : ''}</Text>
+                        <Text style={styles.finished}>{currentItem.finished ? 'finished' : ''}</Text>
+                    </View>
+                    <Button title="Change todo" 
+                            onPress={() => this.setState({...this.state, modal: true})}/>
+                    <Button color="red" title="Remove todo"
+                            onPress={() => {
+                                Alert.alert(
+                                    "Are you sure?",
+                                    `You want to remove "${currentItem.text}" todo`,
+                                    [
+                                        {
+                                            text: "Cancel",
+                                            style: "cancel"
+                                        },
+                                        { text: "Yes", onPress: async () => {                                            
+                                                await onRemove(currentItem)                                            
+                                                navigation.navigate('Home');
+                                            }
+                                        }
+                                    ],
+                                    { cancelable: false }
+                                );
+                            }}/>
+                    <Modal animationType="slide"
+                           visible={this.state.modal}>
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+                                <Text style={styles.text}>Editing todo "{currentItem.textModal}"</Text>
+                                <TextInput ref={this.inputRef} style={styles.input} placeholder='Write Some Text' onChangeText={(text) => this.setState({...this.state, inputText: text})} />
+                                <Button disabled={this.state.inputText === ''} 
+                                        onPress={() => {
+                                            onChangeTodo(this.state.inputText, currentItem.id); 
+                                            this.setState({modal: false, inputText: ''});
+                                        }} 
+                                        title="Change todo" />
+                            </View>
+                        </View>
+                    </Modal>
+                </Container>
+            )
+        }
+
         return (
             <Container style={styles.wrapper}>
-                <View style={styles.cardHead}>
-                    <Text style={styles.text}>{item.text}</Text>
-                    <Text style={styles.finished}>{item.finished ? 'finished' : ''}</Text>
-                </View>
-                <Button title="Change todo" 
-                        onPress={() => this.setState({...this.state, modal: true})}/>
-                <Button color="red" title="Remove todo"/>
-                <Modal animationType="slide"
-                       visible={this.state.modal}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <Text style={styles.text}>Editing todo "{item.textModal}"</Text>
-                            <TextInput ref={this.inputRef} style={styles.input} placeholder='Write Some Text' onChangeText={(text) => this.setState({...this.state, inputText: text})} />
-                            <Button disabled={this.state.inputText === ''} 
-                                    onPress={() => {
-                                        console.log(this.state.inputText);
-                                        this.setState({modal: false, inputText: ''});
-                                    }} 
-                                    title="Change todo" />
-                        </View>
-                    </View>
-                </Modal>
+                <ActivityIndicator size="large" color="#0000ff" />
             </Container>
         )
     }
@@ -118,6 +149,22 @@ const styles = StyleSheet.create({
         borderColor: "#20232a",
         borderRadius: 6,
     }
-})
+});
 
-export default DetailScreen;
+
+const mapStateToProps = (state) => {
+    return {
+        stateTodos: state.todos
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onChangeTodo: (text, id) => dispatch(changeTodo(text, id)),
+        onRemove: (item) => dispatch(removeTodo(item.id))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DetailScreen);
+
+

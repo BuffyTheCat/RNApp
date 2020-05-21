@@ -62,6 +62,26 @@ const reducer = (state = initionState, action) => {
                 loading: true
             }
 
+        case 'TODO_CHANGED':
+            
+            const changedId = action.payload.id;
+            const changedText = action.payload.text;
+            const changedIndex = state.todos.findIndex(({id}) => id === changedId);
+            
+            const changedTodo = {
+                ...state.todos[changedIndex],
+                text: changedText
+            }
+            
+            return {
+                ...state,
+                todos: [
+                    ...state.todos.slice(0, changedIndex),
+                    changedTodo,
+                    ...state.todos.slice(changedIndex + 1)
+                ]
+            }
+
         case 'TODO_LOADED':
             return {
                 ...state,

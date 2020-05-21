@@ -40,6 +40,16 @@ const todosFinished = (id) => {
     }
 }
 
+const changeTodo = (text, id) => {
+    return {
+        type: 'TODO_CHANGED',
+        payload: {
+            id: id,
+            text: text
+        }
+    }
+}
+
 const fetchTodos = (storeService, dispatch) => () => {
     dispatch(todoRequested());
     storeService.getTodos()
@@ -51,5 +61,6 @@ export {
     addTodo,
     removeTodo,
     todosFinished,
-    fetchTodos
+    fetchTodos,
+    changeTodo
 }
