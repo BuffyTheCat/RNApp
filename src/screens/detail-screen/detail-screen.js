@@ -54,7 +54,7 @@ class DetailScreen extends Component {
                            visible={this.state.modal}>
                         <View style={styles.centeredView}>
                             <View style={styles.modalView}>
-                                <Text style={styles.text}>Editing todo "{currentItem.textModal}"</Text>
+                                <Text style={styles.textModal}>Editing todo "{currentItem.text}"</Text>
                                 <TextInput ref={this.inputRef} style={styles.input} placeholder='Write Some Text' onChangeText={(text) => this.setState({...this.state, inputText: text})} />
                                 <Button disabled={this.state.inputText === ''} 
                                         onPress={() => {
@@ -62,6 +62,9 @@ class DetailScreen extends Component {
                                             this.setState({modal: false, inputText: ''});
                                         }} 
                                         title="Change todo" />
+                                <Button onPress={() => this.setState({modal: false, inputText: ''})}
+                                        color="red" 
+                                        title="Abort" />
                             </View>
                         </View>
                     </Modal>
@@ -125,7 +128,7 @@ const styles = StyleSheet.create({
     modalView: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'center',
+        justifyContent: 'space-around',
         margin: 20,
         backgroundColor: "white",
         borderRadius: 20,
