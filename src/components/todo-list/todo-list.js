@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, Button, Alert } from 'react-native';
+import { Text, StyleSheet, ActivityIndicator, Image, FlatList, TouchableOpacity, Button, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { fetchTodos } from '../../actions'
 import { withService } from '../hoc';
@@ -17,6 +17,12 @@ class TodoList extends Component {
         if (loading) {
             return (
                 <ActivityIndicator size="large" color="#0000ff" />
+            )
+        }
+        if (!todos.length) {
+            return (
+                <Image source={require('../../../assets/images/no_results_found.png')}
+                       style={styles.image}/>
             )
         }
 
@@ -115,6 +121,10 @@ const styles = StyleSheet.create({
     todoTextFinished: {
         textDecorationLine: 'line-through',
         fontSize: 24
+    },
+    image: {
+        width: '100%',
+        resizeMode: 'contain'
     }
 })
 
