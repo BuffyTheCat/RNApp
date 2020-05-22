@@ -27,6 +27,7 @@ const ListItem = ({ item, navigation, onFinished, onRemove }) => {
             <Button
                 title="finished"
                 color={item.finished ? "#ffffff" : "#000000"}
+                style={styles.button}
                 onPress={() => onFinished(item.id)}
             />
         </TouchableOpacity>
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
     todoTextFinished: {
         textDecorationLine: 'line-through',
         fontSize: 24
-    },
+    }
 })
 
 export default ListItem;

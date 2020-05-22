@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     text: {
         width: '100%',
         fontSize: 26,
+        fontFamily: 'Montserrat-Regular',
         textAlign: 'center'
     },
     textModal: {
